@@ -1,0 +1,5 @@
+{
+  "name": "oracle-qa",
+  "description": "QA — writes and runs tests. Read-only on source files. No commits. No web access.",
+  "allowedTools": ["Read", "Write", "Bash"]
+}
