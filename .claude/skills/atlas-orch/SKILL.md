@@ -29,12 +29,12 @@ Skip this step if the domain is well-known from memory/context.
 
 ### Step 4: SKILL CHECK + BRAINSTORM
 
-First, scan available superpowers skills for any that apply to this specific task:
-- `frontend-design` — if task involves UI/UX
-- `systematic-debugging` — if task is a bug fix or failure investigation
-- `test-driven-development` — if task requires test coverage
-- `superpowers:using-git-worktrees` — if task needs isolated branch workspace
-- `superpowers:finishing-a-development-branch` — if task is final cleanup before merge
+First, scan available skills for any that apply to this specific task:
+- `frontend-design` — [frontend-design plugin] if task involves UI/UX
+- `superpowers:systematic-debugging` — [superpowers] if task is a bug fix or failure investigation
+- `superpowers:test-driven-development` — [superpowers] if task requires test coverage
+- `superpowers:using-git-worktrees` — [superpowers] if task needs isolated branch workspace
+- `superpowers:finishing-a-development-branch` — [superpowers] if task is final cleanup before merge
 - Any other domain-specific skill that matches the task
 
 Invoke all applicable domain skills BEFORE brainstorming. Then:
@@ -52,7 +52,7 @@ Spawn stark-dev with the full plan:
 ```
 Agent(
   subagent_type="stark-dev",
-  prompt="Implement the following plan. Report IMPLEMENTATION COMPLETE with a list of files changed when done.\n\n<plan>"
+  prompt="Implement the following plan using the ECC tdd-workflow skill (RED→GREEN→REFACTOR). Report IMPLEMENTATION COMPLETE with a list of files changed when done.\n\n<plan>"
 )
 ```
 
@@ -61,7 +61,7 @@ Spawn oracle-qa with implementation details from stark:
 ```
 Agent(
   subagent_type="oracle-qa",
-  prompt="Test the following implementation. Return PASS or FAIL with full details.\n\nFeature: <feature>\nFiles changed: <files from stark report>"
+  prompt="Test the following implementation. Run /code-review then /security-scan on changed files. Return PASS or FAIL with full details including any review or security findings.\n\nFeature: <feature>\nFiles changed: <files from stark report>"
 )
 ```
 

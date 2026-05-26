@@ -4,17 +4,20 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_DIR=""
 GLOBAL=false
+WITH_ECC=false
 
 usage() {
-  echo "Usage: $0 [--target <path>] [--global]"
+  echo "Usage: $0 [--target <path>] [--global] [--with-ecc]"
   echo ""
   echo "  --target <path>   Install skills to <path> (default: ~/projects/.claude)"
   echo "  --global          Install to ~/.claude instead"
+  echo "  --with-ecc        Also install ECC agents, rules, and skills from github.com/affaan-m/ECC"
   echo ""
   echo "Examples:"
   echo "  $0                          # installs to ~/projects/.claude"
   echo "  $0 --target ~/myproject     # installs to ~/myproject/.claude"
   echo "  $0 --global                 # installs to ~/.claude"
+  echo "  $0 --with-ecc               # installs agenticgeek + ECC"
   exit 1
 }
 
@@ -22,6 +25,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --target) TARGET_DIR="$2"; shift 2 ;;
     --global) GLOBAL=true; shift ;;
+    --with-ecc) WITH_ECC=true; shift ;;
     -h|--help) usage ;;
     *) echo "Unknown option: $1"; usage ;;
   esac
@@ -139,6 +143,35 @@ for (const [event, hookFile] of Object.entries(eventMap)) {
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
 NODEEOF
 
+# ── 5. ECC (optional) ─────────────────────────────────────────────────────
+if [[ "$WITH_ECC" == true ]]; then
+  echo "Installing ECC..."
+  ECC_TMP="$(mktemp -d)"
+  if ! command -v git &>/dev/null; then
+    echo "  ✗ git required for --with-ecc. Skipping ECC install."
+  else
+    git clone --depth 1 https://github.com/affaan-m/ECC.git "$ECC_TMP/ecc" 2>/dev/null
+    ECC_DIR="$ECC_TMP/ecc"
+
+    # agents → ~/.claude/agents/
+    mkdir -p "$HOME/.claude/agents"
+    cp "$ECC_DIR"/agents/*.md "$HOME/.claude/agents/" 2>/dev/null && echo "  ✓ ECC agents installed"
+
+    # rules: common + python → ~/.claude/rules/ecc/
+    mkdir -p "$HOME/.claude/rules/ecc"
+    cp -r "$ECC_DIR/rules/common" "$HOME/.claude/rules/ecc/" 2>/dev/null && echo "  ✓ ECC rules/common installed"
+    [[ -d "$ECC_DIR/rules/python" ]] && cp -r "$ECC_DIR/rules/python" "$HOME/.claude/rules/ecc/" && echo "  ✓ ECC rules/python installed"
+
+    # core skills → ~/.claude/skills/ecc/
+    mkdir -p "$HOME/.claude/skills/ecc"
+    cp -r "$ECC_DIR/.agents/skills/"* "$HOME/.claude/skills/ecc/" 2>/dev/null || true
+    [[ -d "$ECC_DIR/skills/search-first" ]] && cp -r "$ECC_DIR/skills/search-first" "$HOME/.claude/skills/ecc/" && echo "  ✓ ECC skills installed"
+
+    rm -rf "$ECC_TMP"
+    echo "  ✓ ECC install complete"
+  fi
+fi
+
 echo ""
 echo "Done. Agents installed:"
 for agent_def in "$SCRIPT_DIR/.claude/skills"/*/agent-def.json; do
@@ -150,4 +183,5 @@ for agent_def in "$SCRIPT_DIR/.claude/skills"/*/agent-def.json; do
 done
 echo ""
 echo "Atlas skill available via /atlas"
+[[ "$WITH_ECC" == true ]] && echo "ECC agents, rules, and skills installed to ~/.claude/"
 echo "Restart Claude Code to load agent types and hooks."

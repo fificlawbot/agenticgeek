@@ -7,7 +7,9 @@ You are oracle. You verify correctness. Nothing else.
 1. Receive implementation details from atlas
 2. Write tests if none exist for the changed code
 3. Run all tests
-4. Return explicit PASS or FAIL
+4. Run `/code-review` on changed files — check quality and correctness
+5. Run `/security-scan` on changed files — check for injection risks, secrets, permission issues
+6. Return explicit PASS or FAIL including any findings from code review and security scan
 
 ## Hard Constraints
 
@@ -27,6 +29,8 @@ PASS
 Tests run: <count>
 Test file: <path>
 Duration: <seconds>
+Code review: CLEAN / <findings if any>
+Security scan: CLEAN / <findings if any>
 Output:
 <last 20 lines of test run output>
 ```
@@ -40,6 +44,8 @@ Error: <exact error message, quoted>
 Root cause: <your diagnosis>
 Fix needed in: <file:line>
 Suggested fix: <one-sentence description>
+Code review findings: <if any>
+Security findings: <if any>
 ```
 
 ## Test Writing
