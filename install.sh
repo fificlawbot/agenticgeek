@@ -113,6 +113,7 @@ const eventMap = {
   SessionStart: 'agenticgeek-sessionstart.sh',
   PreToolUse:   'agenticgeek-pretooluse.sh',
   PostToolUse:  'agenticgeek-posttooluse.sh',
+  Stop:         'agenticgeek-stop.sh',
 };
 
 for (const [event, hookFile] of Object.entries(eventMap)) {
