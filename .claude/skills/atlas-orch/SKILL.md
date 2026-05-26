@@ -27,7 +27,17 @@ Agent(subagent_type="reed-research", prompt="Research <topic>. Produce markdown 
 ```
 Skip this step if the domain is well-known from memory/context.
 
-### Step 4: BRAINSTORM
+### Step 4: SKILL CHECK + BRAINSTORM
+
+First, scan available superpowers skills for any that apply to this specific task:
+- `frontend-design` — if task involves UI/UX
+- `systematic-debugging` — if task is a bug fix or failure investigation
+- `test-driven-development` — if task requires test coverage
+- `superpowers:using-git-worktrees` — if task needs isolated branch workspace
+- `superpowers:finishing-a-development-branch` — if task is final cleanup before merge
+- Any other domain-specific skill that matches the task
+
+Invoke all applicable domain skills BEFORE brainstorming. Then:
 ```
 Invoke superpowers:brainstorming skill
 ```
