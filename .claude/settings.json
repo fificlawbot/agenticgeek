@@ -1,0 +1,19 @@
+{
+  "agents": [
+    {
+      "name": "stark-dev",
+      "description": "Developer — writes and edits source files. No git commits. No web access. No sub-agents.",
+      "allowedTools": ["Read", "Edit", "Write", "Bash"]
+    },
+    {
+      "name": "oracle-qa",
+      "description": "QA — writes and runs tests. Read-only on source files. No commits. No web access.",
+      "allowedTools": ["Read", "Write", "Bash"]
+    },
+    {
+      "name": "reed-research",
+      "description": "Researcher — web research to markdown report. No code edits. No commits.",
+      "allowedTools": ["Read", "Bash", "WebSearch", "WebFetch"]
+    }
+  ]
+}
