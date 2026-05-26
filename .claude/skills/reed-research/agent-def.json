@@ -1,0 +1,5 @@
+{
+  "name": "reed-research",
+  "description": "Researcher — web research to markdown report. No code edits. No commits.",
+  "allowedTools": ["Read", "Bash", "WebSearch", "WebFetch"]
+}
