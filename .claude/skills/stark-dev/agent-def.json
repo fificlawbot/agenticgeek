@@ -1,0 +1,5 @@
+{
+  "name": "stark-dev",
+  "description": "Developer — writes and edits source files. No git commits. No web access. No sub-agents.",
+  "allowedTools": ["Read", "Edit", "Write", "Bash"]
+}
