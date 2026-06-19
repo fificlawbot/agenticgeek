@@ -100,7 +100,41 @@ cmd_push() {
   report
   echo "Review 'git diff', then commit + push."
 }
-cmd_pull() { echo "pull not implemented yet"; }
+cmd_pull() {
+  local tgt="$TARGET_HOME/.claude"
+  echo "PULL  $REPO_CLAUDE -> $tgt"
+
+  # 1. skills + agents — verbatim, no prune
+  sync_dir_verbatim "$REPO_CLAUDE/skills" "$tgt/skills" "skills"
+  sync_dir_verbatim "$REPO_CLAUDE/agents" "$tgt/agents" "agents"
+
+  # 2. hooks — render tokens, diff-copy, mark executable
+  mkdir -p "$tgt/hooks"
+  for f in "$REPO_CLAUDE/hooks"/*; do
+    [ -f "$f" ] || continue
+    render_file "$f" > "$TMP/$(basename "$f")"
+    copy_if_changed "$TMP/$(basename "$f")" "$tgt/hooks/$(basename "$f")"
+    chmod +x "$tgt/hooks/$(basename "$f")" 2>/dev/null || true
+  done
+
+  # 3. settings.json + .mcp.json — render then MERGE (never clobber)
+  render_file "$REPO_CLAUDE/settings.json" > "$TMP/settings.json"
+  node "$LIB/merge-json.js" "$tgt/settings.json" "$TMP/settings.json"
+  render_file "$REPO_CLAUDE/.mcp.json" > "$TMP/.mcp.json"
+  node "$LIB/merge-json.js" "$tgt/.mcp.json" "$TMP/.mcp.json"
+
+  # 4. memory — placed under the username-derived path (assumes projects at $HOME/projects)
+  local memtgt="$tgt/projects/$(mem_dir_for_home "$TARGET_HOME")/memory"
+  sync_dir_verbatim "$REPO_CLAUDE/memory" "$memtgt" "memory"
+
+  report
+  echo ""
+  echo "Next steps (see config-sync/RESTORE.md):"
+  echo "  1. Reinstall plugins:  bash -c 'while read -r l; do [ \"\${l#\\#}\" = \"\$l\" ] && [ -n \"\$l\" ] && eval \"\$l\"; done < config-sync/plugins.txt'"
+  echo "  2. ./install.sh --global   (re-merge agenticgeek hooks/agents)"
+  echo "  3. git clone github.com/tradesdontlie/tradingview-mcp ~/tradingview-mcp"
+  echo "  4. Restart Claude Code"
+}
 
 case "${1:-}" in
   push) cmd_push ;;
