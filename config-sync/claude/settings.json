@@ -1,0 +1,270 @@
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"
+  },
+  "permissions": {
+    "defaultMode": "auto",
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(rm -rf __HOME__:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "Bash(diskutil:*)"
+    ],
+    "allow": [
+      "Bash(git:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Bash(cd:*)",
+      "Bash(npx:*)",
+      "Bash(npm:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(node:*)",
+      "Bash(python3:*)",
+      "Bash(.venv/bin/python3:*)",
+      "mcp__plugin_discord_discord__fetch_messages",
+      "mcp__plugin_discord_discord__reply",
+      "mcp__plugin_discord_discord__react",
+      "mcp__plugin_discord_discord__edit_message",
+      "mcp__plugin_discord_discord__download_attachment",
+      "Bash(open /tmp/morning-reel-test.mp4)",
+      "Bash(open /tmp/morning-reel-v2.mp4)",
+      "Bash(open /tmp/morning-reel-v3.mp4)",
+      "Bash(cp /tmp/track_1024.mp3 '__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/morning-reel/music/bg.mp3' && echo \"copied\")",
+      "Bash(open /tmp/morning-reel-music.mp4)",
+      "Bash(python3 tools/video_post.py --batch morning --json 'morningbrief/20260512_080654_8am_market_brief.json')",
+      "Bash(chmod +x '__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/tools/image2social_morning.sh' '__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/tools/image2social_evening.sh')",
+      "Bash(python3 tools/video_post.py --batch evening --json 'morningbrief/20260512_162059_415_earnings_roundup.json')",
+      "Bash(python3 tools/video_post.py --batch evening --json 'morningbrief/20260512_162059_415_earnings_roundup.json' --platforms youtube)",
+      "Bash(open ~/Library/FifiBot/.tmp/variant_1.jpg ~/Library/FifiBot/.tmp/variant_2.jpg ~/Library/FifiBot/.tmp/variant_3.jpg ~/Library/FifiBot/.tmp/variant_4.jpg)",
+      "Read(/__HOME__/Library/FifiBot/.tmp/**)",
+      "Bash(bash -n \"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/trading-morning-levels/morning_levels.sh\")",
+      "Bash(echo \"Launched PID: $!\")",
+      "Bash(osascript -e 'do shell script \"/Applications/TradingView.app/Contents/MacOS/TradingView --remote-debugging-port=9222 &> /tmp/tv_start.log &\"')",
+      "Bash(bash -l -c '/Applications/TradingView.app/Contents/MacOS/TradingView --remote-debugging-port=9222 &>/tmp/tv_relaunch.log &')",
+      "Bash(HOME=__HOME__ PATH=\"/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin\" /Applications/TradingView.app/Contents/MacOS/TradingView --remote-debugging-port=9222)",
+      "Bash(osascript)",
+      "Read(/__HOME__/Library/FifiBot/**)",
+      "Bash(bash \"__HOME__/Library/FifiBot/run_morning.sh\")",
+      "Bash(mv \"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts\" ~/projects/)",
+      "Bash(mv \"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/nq-es-backtester\" ~/projects/)",
+      "Bash(mv \"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/sahajayoga\" ~/projects/)",
+      "Bash(mv \"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/tv-orderflow\" ~/projects/)",
+      "Bash(mv \"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/CLAUDE.md\" ~/projects/)",
+      "Read(/__HOME__/projects/**)",
+      "Bash(DRIVE=\"__HOME__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects\" && mv \"$DRIVE/.agents\" ~/projects/ && mv \"$DRIVE/.claude\" ~/projects/ && mv \"$DRIVE/.github\" ~/projects/ && mv \"$DRIVE/.gitignore\" ~/projects/ && echo \"done\" && ls -la ~/projects/)",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(bash ~/Library/FifiBot/run_evening.sh)",
+      "Bash(cp ~/Library/FifiBot/morning-reel/music/track_*.mp3 ~/projects/IGShorts/morning-reel/music/ && ls ~/projects/IGShorts/morning-reel/music/)",
+      "Bash(python3 ~/projects/IGShorts/tools/video_post.py --batch evening --json ~/projects/IGShorts/morningbrief/20260514_163000_430_earnings_roundup.json --render-only)",
+      "Bash(open '__HOME__/projects/IGShorts/.tmp/reel_evening_1778813052.mp4')",
+      "Bash(open '__HOME__/projects/IGShorts/.tmp/reel_evening_1778813223.mp4')",
+      "Bash(open '__HOME__/projects/IGShorts/.tmp/reel_evening_1778813388.mp4')",
+      "Bash(bash ~/Library/FifiBot/run_morning.sh)",
+      "Bash(ffmpeg -i ~/projects/IGShorts/.tmp/reel_morning_1778852339.mp4 -vframes 1 -q:v 2 /tmp/frame0.jpg)",
+      "Bash(open /tmp/frame0.jpg)",
+      "Bash(python3 ~/projects/IGShorts/tools/video_post.py --batch morning --json '__TRACKED_VAR__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/morningbrief/20260515_082200_8am_market_brief.json' --render-only)",
+      "Bash(python3 -c \"import ast; ast.parse\\(open\\('__HOME__/projects/IGShorts/tools/yt_thumbnail.py'\\).read\\(\\)\\); print\\('syntax OK'\\)\")",
+      "Read(/__HOME__/Downloads/**)",
+      "Bash(python3 ~/projects/IGShorts/tools/yt_thumbnail.py --setup \"__HOME__/Downloads/client_secret_428617744001-6r0l8nkgasdg5eshvako6ej7i62ug6c6.apps.googleusercontent.com.json\")",
+      "Bash(lsof -ti:8765)",
+      "Bash(xargs kill -9)",
+      "Bash(python3 ~/projects/IGShorts/tools/video_post.py --batch morning --json '__TRACKED_VAR__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/morningbrief/20260515_082200_8am_market_brief.json' --platforms youtube)",
+      "Bash(python3 ~/projects/IGShorts/tools/video_post.py --batch morning --json '__TRACKED_VAR__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/morningbrief/20260515_082200_8am_market_brief.json' --platforms youtube --no-shorts)",
+      "Bash(ffmpeg -i ~/projects/IGShorts/.tmp/reel_morning_1778874931.mp4 -vframes 1 -q:v 2 /tmp/frame0_check.jpg)",
+      "Bash(open /tmp/frame0_check.jpg)",
+      "Bash(python3 ~/projects/IGShorts/tools/yt_thumbnail.py --video-id jtQQMrv7Qhg --thumbnail '__TRACKED_VAR__/Library/CloudStorage/GoogleDrive-fificlawbot@gmail.com/My Drive/Projects/IGShorts/morningbrief/20260515_163000_430_earnings_roundup_cover.jpg')",
+      "Bash(open /tmp/yt_thumb_check.jpg)",
+      "Bash(cp ~/projects/IGShorts/tools/video_post.py /tmp/igshorts_tmp/tools/video_post.py)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(launchctl unload *)",
+      "Bash(launchctl load *)",
+      "Bash(ls \"__HOME__/My Drive/FifiBot/\")",
+      "Read(/__HOME__/My Drive/FifiBot/**)",
+      "Bash(git -C ~/projects/nq-es-backtester log --oneline -10)",
+      "mcp__plugin_claude-mem_mcp-search__get_observations",
+      "Bash(git -C ~/projects/nq-es-backtester branch -a)",
+      "Bash(git -C ~/projects/nq-es-backtester status)",
+      "Bash(git -C ~/projects/nq-es-backtester log --oneline main..exp/equity-parity-20260508)",
+      "Bash(git -C ~/projects/nq-es-backtester diff main..exp/equity-parity-20260508 -- strategies/strb.py)",
+      "Bash(git -C ~/projects/nq-es-backtester diff main..exp/equity-parity-20260508 --name-only)",
+      "Bash(git -C ~/projects/nq-es-backtester diff main..exp/equity-parity-20260508 -- strategies/tradersarc_orb_v2.py)",
+      "Bash(git -C ~/projects/nq-es-backtester checkout main)",
+      "Bash(git -C ~/projects/nq-es-backtester pull)",
+      "Bash(git -C ~/projects/nq-es-backtester rm docs/automation/orbv2-tradingview-to-traderspost.md)",
+      "Bash(git -C ~/projects/nq-es-backtester add docs/automation/orbv2-tradingview-to-traderspost.pdf)",
+      "Bash(git -C ~/projects/nq-es-backtester commit -m ' *)",
+      "Bash(git -C ~/projects/nq-es-backtester push)",
+      "Bash(git -C ~/projects/nq-es-backtester checkout -b exp/markov-forward-test-20260520)",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
+      "Bash(yt-dlp --version)",
+      "Bash(pip3 show *)",
+      "Bash(pip3 install *)",
+      "Bash(yt-dlp --write-auto-sub --skip-download --sub-format vtt -o /tmp/yt-transcript \"https://www.youtube.com/watch?v=ZVMTeDBmSrI\")",
+      "Bash(python3 -m yt_dlp --write-auto-sub --skip-download --sub-format vtt -o /tmp/yt-transcript \"https://www.youtube.com/watch?v=ZVMTeDBmSrI\")",
+      "Bash(python3 -m yt_dlp --dump-json --no-download \"https://www.youtube.com/watch?v=ZVMTeDBmSrI\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Title:', d.get\\('title'\\)\\); print\\('Description:', d.get\\('description',''\\)[:2000]\\)\")",
+      "mcp__plugin_context-mode_context-mode__ctx_search",
+      "Bash(git -C ~/projects/nq-es-backtester add docs/superpowers/specs/2026-05-20-markov-regime-strb-design.md)",
+      "Bash(git -C ~/projects/nq-es-backtester add docs/superpowers/plans/2026-05-20-markov-regime-strb.md)",
+      "Bash(git -C ~/projects/nq-es-backtester branch --show-current)",
+      "Bash(python3 -m pytest tests/test_build_regime.py -v)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -m pytest tests/ -v --tb=short)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "Bash(mkdir -p ~/projects/nq-es-backtester/data/regime)",
+      "Bash(python3 scripts/build_regime.py --parquet data/market_data/MNQ/1m/MNQ_1m.parquet --out data/regime/mnq_daily_regime.parquet --min-train 63)",
+      "Bash(python3 -m pytest tests/test_strb_regime.py::test_regime_filter_blocks_entry_on_bear_day -v)",
+      "Bash(python3 -m pytest tests/test_strb_regime.py -v)",
+      "Bash(python3 scripts/ablation_strb_regime.py)",
+      "Bash(tee /tmp/regime_ablation_result.txt)",
+      "Bash(git -C ~/projects/nq-es-backtester log --oneline -5)",
+      "Bash(git -C ~/projects/nq-es-backtester add scripts/ablation_strb_regime.py)",
+      "Bash(git -C ~/projects/nq-es-backtester add pinescript/tradersarc_orb_strategy_v2.pine)",
+      "Bash(git -C ~/projects/nq-es-backtester commit -m \"fix\\(pine\\): compute regime trailing return in daily context — [regimeWindow] was looking back intraday bars not trading days\")",
+      "Bash(rm -rf ~/.claude/skills/gsd-* && ls ~/.claude/skills/)",
+      "Bash(rm -rf ~/projects/.agents ~/projects/.github && rm -f ~/.claude/hooks/gsd-*.js ~/.claude/hooks/gsd-*.sh && ls ~/projects/ && ls ~/.claude/hooks/)",
+      "mcp__plugin_claude-mem_mcp-search__search",
+      "Bash(timeout 10 python3 .tmp/or_atr_analysis.py)",
+      "Bash(open __HOME__/projects/nq-es-backtester/.tmp/strb_filter_comparison.html)",
+      "Bash(python3 scripts/challenge_mc_full.py)",
+      "Bash(open __HOME__/projects/nq-es-backtester/docs/index.html)",
+      "Bash(python3 scripts/ablation_strb_or_cap.py)",
+      "Bash(git reset *)",
+      "Bash(/Applications/TradingView.app/Contents/MacOS/TradingView)",
+      "Bash(disown)",
+      "Bash(awk '{print \"PID:\"$2}')",
+      "Read(/__HOME__/Library/Application Support/TradingView/**)",
+      "Bash(awk -F',' '{print $1}')",
+      "Bash(awk -F',' '{print $6}')",
+      "Bash(mkdir -p ~/.claude/skills/session-handoff)",
+      "Edit(~/.claude/skills/session-handoff/**)",
+      "Bash(mv ~/.claude/skills/session-handoff ~/projects/.claude/skills/)",
+      "Bash(rmdir ~/.claude/skills/)",
+      "Bash(bash -c 'input=$\\(jq -r \".input // empty\" 2>/dev/null\\); [[ \"$input\" == \"/clear\" ]] && echo '\\\\''{\"continue\":false,\"stopReason\":\"Session not saved. Run /session-handoff first, then /clear.\"}'\\\\'' || echo '\\\\''{\"continue\":true}'\\\\''')",
+      "Bash(grep -v \"^$\")",
+      "Bash(python3 scripts/run_adaptive_tp1.py)",
+      "Bash(echo \"PID $!\")",
+      "Bash(mkdir -p __HOME__/projects/.claude/hooks)",
+      "Bash(mv __HOME__/.claude/hooks/agenticgeek-stop.sh __HOME__/projects/.claude/hooks/agenticgeek-stop.sh)",
+      "Bash(chmod +x __HOME__/projects/.claude/hooks/agenticgeek-stop.sh)",
+      "Bash(npm list *)",
+      "Bash(grep -q \"^DONE$\" /tmp/adaptive_modes.log)",
+      "Bash(grep -E \"^===|StrA$|StrB$|StrC$|Total\" /tmp/adaptive_v7.log)",
+      "Bash(nohup python3 -u scripts/run_orb_v2.py --profile StrB --canonical --quantity 2 --initial-capital 50000 --target-pct 2.0 --short-target-pct 2.0 --skip-weekdays 0 --start-date 2026-03-16 --end-date 2026-06-01 --output-prefix python_strb_recent)",
+      "Bash(nohup python3 -u scripts/run_orb_v2.py --all-profiles --canonical --quantity 2 --initial-capital 50000 --target-pct 2.0 --short-target-pct 2.0 --daily-loss-cap 150 --skip-weekdays 0 --max-or-width 100 --start-date 2026-03-16 --end-date 2026-06-01 --output-prefix python_prop_narrowor)",
+      "Bash(pgrep -f \"python_strb_recent\\\\|python_prop_narrowor\")",
+      "Bash(nohup python3 -u scripts/run_orb_v2.py --profile StrB --canonical --quantity 2 --initial-capital 50000 --target-pct 2.0 --short-target-pct 2.0 --skip-weekdays 0 --years 2024,2025,2026 --output-prefix python_strb_long)",
+      "Bash(pgrep -f \"python_strb_long\")",
+      "Bash(nohup python3 -u scripts/optimize_prop.py)",
+      "Bash(echo \"PID=$!\")",
+      "Bash(pgrep -f optimize_prop)",
+      "Bash(nohup python3 -u /tmp/mc_tp_sweep.py)",
+      "Bash(pgrep -f mc_tp_sweep)",
+      "Bash(nohup python3 -u /tmp/mc_per_strat_tp.py)",
+      "Bash(pgrep -f mc_per_strat_tp)",
+      "Bash(awk -F',' '{print $1,$2,$3,$4,$5,$15}')",
+      "mcp__plugin_claude-mem_mcp-search__smart_outline",
+      "Bash(python3 scripts/mc_sim.py)",
+      "Bash(npm --version)",
+      "Bash(/opt/homebrew/bin/python3 --version)",
+      "Bash(/opt/homebrew/bin/python3 -m pip install manim anthropic python-dotenv requests pytest)",
+      "Bash(/opt/homebrew/bin/python3 -m pip install --user manim anthropic python-dotenv requests pytest)"
+    ],
+    "additionalDirectories": [
+      "/private/tmp",
+      "__HOME__/Library/LaunchAgents",
+      "__HOME__/Library/FifiBot",
+      "__HOME__/projects",
+      "__HOME__/Library/FifiBot/morning-reel/music",
+      "__HOME__/.claude/skills",
+      "__HOME__/.claude",
+      "__HOME__/.claude/hooks"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"__HOME__/.claude/hooks/context-mode-cache-heal.mjs\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"__HOME__/.claude/hooks/agenticgeek-sessionstart.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"__HOME__/.claude/hooks/agenticgeek-pretooluse.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"__HOME__/.claude/hooks/agenticgeek-posttooluse.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "skill-creator@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "claude-mem@thedotmack": true,
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "context-mode@context-mode": true,
+    "discord@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/thedotmack/claude-mem.git"
+      }
+    },
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "skipAutoPermissionPrompt": true
+}
