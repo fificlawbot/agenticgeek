@@ -16,11 +16,11 @@ Color scheme:
 Usage: python3 draw_levels.py <levels.json>
 """
 
-import sys, json, subprocess, time
+import os, sys, json, subprocess, time
 
 T      = int(time.time())
 levels = json.load(open(sys.argv[1]))
-TV     = ["node", "/Users/trp/tradingview-mcp/src/cli/index.js"]
+TV     = ["node", os.path.expanduser("~/tradingview-mcp/src/cli/index.js")]
 
 total_drawn = [0]
 
@@ -108,5 +108,17 @@ for p in h1.get("sr", []):
 # ── HVN shelves (orange, dashed, width=2) ────────────────────────────────────
 for p in levels.get("hvn", []):
     draw_sr(p, "#FF8C00", 2, 1, "HVN")
+
+# ── Asia session range (purple, solid, width=2, no dedup) ────────────────────
+# 18:00 ET prior day → 03:00 ET today. Anchors for overnight high/low.
+asia = levels.get("asia", {})
+draw(asia.get("hi"), "#800080", 2, 0, "Asia Hi")
+draw(asia.get("lo"), "#800080", 2, 0, "Asia Lo")
+
+# ── London session range (teal, solid, width=2, no dedup) ────────────────────
+# 03:00 ET → 09:30 ET today. Partial when the run fires before 09:30.
+lon = levels.get("london", {})
+draw(lon.get("hi"), "#008080", 2, 0, "Lon Hi")
+draw(lon.get("lo"), "#008080", 2, 0, "Lon Lo")
 
 print(f"Drew {total_drawn[0]} levels.")

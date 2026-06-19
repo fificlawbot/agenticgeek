@@ -1,8 +1,8 @@
 # Reinstall after `pull`. Lines are idempotent — Claude skips already-installed.
 
 # Marketplaces
-claude plugin marketplace add JuliusBrussee/caveman
 claude plugin marketplace add anthropics/claude-plugins-official
+claude plugin marketplace add JuliusBrussee/caveman
 claude plugin marketplace add https://github.com/thedotmack/claude-mem.git
 claude plugin marketplace add mksglu/context-mode
 

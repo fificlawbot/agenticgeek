@@ -13,6 +13,7 @@ SKILL  = os.path.expanduser("~/.claude/skills/trading-morning-levels")
 TV     = ["node", os.path.expanduser("~/tradingview-mcp/src/cli/index.js")]
 TV_APP = "/Applications/TradingView.app/Contents/MacOS/TradingView"
 RANGE  = sys.argv[1] if len(sys.argv) > 1 else "1000"
+PY     = sys.executable  # spawn child scripts under the same interpreter (so deps line up)
 
 # Weekday guard — skip weekends (launchd doesn't support day-of-week natively)
 today = datetime.date.today()
@@ -58,6 +59,38 @@ def tv(*args, check=False):
     except Exception:
         return {}
 
+def wipe_drawings(label="", max_passes=5):
+    """
+    Robust per-chart wipe: list every shape, remove each by entity_id, repeat
+    until the list is empty (max_passes attempts). Bulk `tv draw clear` calls
+    TV's removeAllShapes() which has been observed to no-op on persisted /
+    cloud-synced drawings, so we enumerate explicitly.
+    Returns final remaining count (or -1 if list never returned a parseable count).
+    """
+    last_count = -1
+    for attempt in range(1, max_passes + 1):
+        listing = tv("draw", "list")
+        shapes = listing.get("shapes", []) or []
+        last_count = listing.get("count", len(shapes))
+        if not shapes:
+            if attempt == 1:
+                print(f"    {label}wipe: chart already clean")
+            else:
+                print(f"    {label}wipe: clean after {attempt - 1} pass(es)")
+            return 0
+        print(f"    {label}wipe pass {attempt}: removing {len(shapes)} shape(s)")
+        for s in shapes:
+            sid = s.get("id")
+            if sid:
+                tv("draw", "remove", sid)
+        time.sleep(1)
+    # Final check
+    final = tv("draw", "list")
+    final_count = final.get("count", len(final.get("shapes", []) or []))
+    if final_count:
+        print(f"    {label}WARNING: {final_count} shape(s) still present after {max_passes} passes")
+    return final_count
+
 def set_symbol(sym):
     tv("symbol", "--set", sym)
     time.sleep(3)
@@ -88,7 +121,7 @@ def get_price():
     return raw.replace(",", "")
 
 def analyze(price, f1h, f4h, fdaily, outfile):
-    cmd = ["python3", f"{SKILL}/analyze_levels.py",
+    cmd = [PY, f"{SKILL}/analyze_levels.py",
            price, RANGE, f1h, f4h, fdaily]
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
@@ -107,10 +140,9 @@ def draw_levels(sym, levels_json):
     print(f"  → {sym}: switching chart...")
     set_symbol(sym)
     set_tf(60)
-    tv("draw", "clear")
-    time.sleep(0.5)
+    wipe_drawings(label="    ")
     r = subprocess.run(
-        ["python3", f"{SKILL}/draw_levels.py", levels_json],
+        [PY, f"{SKILL}/draw_levels.py", levels_json],
         capture_output=True, text=True
     )
     print(f"    {r.stdout.strip()}")
@@ -138,7 +170,7 @@ def _screenshot_and_post(sym, levels_json, price):
     """Call screenshot_levels.py in a subprocess. Failure is non-fatal."""
     try:
         r = subprocess.run(
-            ["python3", f"{SKILL}/screenshot_levels.py", sym, levels_json, str(price)],
+            [PY, f"{SKILL}/screenshot_levels.py", sym, levels_json, str(price)],
             capture_output=True, text=True, timeout=60,
         )
         if r.stdout.strip():
@@ -187,6 +219,17 @@ print(f"Minis  ({len(minis)}):  {minis}")
 print(f"Micros ({len(micros)}): {micros} ← copy only, no independent analysis")
 print()
 
+# ── Pre-pass: wipe yesterday's drawings on every watchlist symbol ─────────────
+# Bulk `tv draw clear` (= TV's removeAllShapes) has been observed to leave
+# persisted/cloud-synced shapes behind, so wipe by enumerating each shape.
+print("Wiping prior drawings on all watchlist symbols...")
+for sym in symbols:
+    print(f"  {sym}:")
+    set_symbol(sym)
+    set_tf(60)
+    wipe_drawings(label="    ")
+print()
+
 step = 0
 total_steps = len(minis) + len(micros)
 
@@ -233,6 +276,8 @@ with tempfile.TemporaryDirectory() as TMP:
         print(f"  Analyzing (Daily → 4H → 1H)...")
         analyze(price, f1h, f4h, fdaily, flvl)
         shutil.copy(flvl, f"{SKILL}/levels_{safe}.json")
+        # Cache 1H bars + price snapshot so screenshot step never needs TV.
+        shutil.copy(f1h, f"{SKILL}/bars_{safe}_1h.json")
 
         draw_levels(sym, flvl)
         _mark_symbol_success(sym)

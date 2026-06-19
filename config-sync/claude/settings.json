@@ -4,18 +4,6 @@
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"
   },
   "permissions": {
-    "defaultMode": "auto",
-    "deny": [
-      "Bash(sudo:*)",
-      "Bash(rm -rf /:*)",
-      "Bash(rm -rf ~:*)",
-      "Bash(rm -rf __HOME__:*)",
-      "Bash(dd:*)",
-      "Bash(mkfs:*)",
-      "Bash(shutdown:*)",
-      "Bash(reboot:*)",
-      "Bash(diskutil:*)"
-    ],
     "allow": [
       "Bash(git:*)",
       "Bash(ffmpeg:*)",
@@ -180,6 +168,18 @@
       "Bash(/opt/homebrew/bin/python3 -m pip install manim anthropic python-dotenv requests pytest)",
       "Bash(/opt/homebrew/bin/python3 -m pip install --user manim anthropic python-dotenv requests pytest)"
     ],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(rm -rf __HOME__:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "Bash(diskutil:*)"
+    ],
+    "defaultMode": "auto",
     "additionalDirectories": [
       "/private/tmp",
       "__HOME__/Library/LaunchAgents",
@@ -191,6 +191,7 @@
       "__HOME__/.claude/hooks"
     ]
   },
+  "model": "sonnet",
   "hooks": {
     "SessionStart": [
       {
@@ -232,6 +233,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"__HOME__/.claude/hooks/agenticgeek-stop.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {
@@ -263,8 +275,49 @@
         "source": "github",
         "repo": "mksglu/context-mode"
       }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
     }
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"__HOME__/.claude/plugins/cache/caveman/caveman/25d22f864ad6/src/hooks/caveman-statusline.sh\""
+  },
   "effortLevel": "high",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "agents": [
+    {
+      "name": "oracle-qa",
+      "description": "QA — writes and runs tests. Read-only on source files. No commits. No web access.",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Bash"
+      ]
+    },
+    {
+      "name": "reed-research",
+      "description": "Researcher — web research to markdown report. No code edits. No commits.",
+      "allowedTools": [
+        "Read",
+        "Bash",
+        "WebSearch",
+        "WebFetch"
+      ]
+    },
+    {
+      "name": "stark-dev",
+      "description": "Developer — writes and edits source files. No git commits. No web access. No sub-agents.",
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Bash"
+      ]
+    }
+  ]
 }

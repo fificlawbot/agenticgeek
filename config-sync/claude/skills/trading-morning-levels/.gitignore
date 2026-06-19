@@ -1,0 +1,17 @@
+# Secrets — webhooks live in macOS Keychain (service: trading-morning-levels)
+.env
+.env.*
+
+# macOS metadata
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime artifacts (written into the repo because the runtime skill dir is
+# symlinked here — see install.sh). Regenerated on every launchd run.
+morning_levels.log
+levels_*.json
+bars_*_1h.json

@@ -6,7 +6,7 @@
 #   range_pts: ±points filter for S/R lines (default 1000)
 
 set -e
-TV="node /Users/trp/tradingview-mcp/src/cli/index.js"
+TV="node $HOME/tradingview-mcp/src/cli/index.js"
 SKILL="$HOME/.claude/skills/trading-morning-levels"
 RANGE="${1:-1000}"
 TMP="/tmp/tv_levels_$$"

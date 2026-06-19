@@ -2,11 +2,14 @@
 """
 screenshot_levels.py <symbol> <levels_json_path> <price>
 
-Renders clean 1H candlestick chart + level lines. Saves PNG to /tmp/.
-Posts PNG to Discord webhook (DISCORD_LEVELS_WEBHOOK in .env).
+Renders clean 1H candlestick chart + level lines via mplfinance, saves PNG
+to /tmp/, and posts to Discord (DISCORD_LEVELS_WEBHOOK in .env).
+
+Reads 1H bars from bars_<safe_symbol>_1h.json cached by run_levels.py.
+No TradingView / tradingview-mcp connection required at screenshot time.
 """
 
-import sys, os, json, subprocess, datetime, urllib.request
+import sys, os, json, datetime, urllib.request
 from pathlib import Path
 import pandas as pd
 import mplfinance as mpf
@@ -14,7 +17,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-TV    = ["node", os.path.expanduser("~/tradingview-mcp/src/cli/index.js")]
 SKILL = os.path.dirname(os.path.abspath(__file__))
 
 RANGE_PTS = 500
@@ -46,6 +48,17 @@ def build_levels_from_json(data, current_price, range_pts=RANGE_PTS):
     for p in data.get("hvn", []):
         if p:
             entries.append((p, "HVN", "#FFA500", 1, "--"))
+    # Asia / London session high-low — brighter shades for the dark PNG bg.
+    asia = data.get("asia", {})
+    if asia.get("hi") is not None:
+        entries.append((asia["hi"], "Asia Hi", "#C766FF", 2, "-"))
+    if asia.get("lo") is not None:
+        entries.append((asia["lo"], "Asia Lo", "#C766FF", 2, "-"))
+    lon = data.get("london", {})
+    if lon.get("hi") is not None:
+        entries.append((lon["hi"], "Lon Hi",  "#33D4D4", 2, "-"))
+    if lon.get("lo") is not None:
+        entries.append((lon["lo"], "Lon Lo",  "#33D4D4", 2, "-"))
     return [
         (price, label, color, lw, ls)
         for price, label, color, lw, ls in entries
@@ -73,13 +86,12 @@ def check_success_flag(symbol):
         return False
 
 
-def fetch_1h_bars():
-    """Fetch 1H bars from active TV chart. CDP ignores --bars, returns up to 100."""
-    r = subprocess.run(
-        TV + ["ohlcv", "--resolution", "60", "--bars", "100"],
-        capture_output=True, text=True, timeout=30
-    )
-    bars = json.loads(r.stdout).get("bars", [])
+def load_1h_bars(symbol):
+    """Load 1H bars cached by run_levels.py. No TradingView connection needed."""
+    safe = symbol.replace(":", "_").replace("/", "_")
+    path = f"{SKILL}/bars_{safe}_1h.json"
+    with open(path) as f:
+        bars = json.load(f)
     return bars[-30:]  # last 30 bars ≈ 1.5 trading days
 
 
@@ -238,9 +250,13 @@ def main():
         print(f"WARNING: no levels within {RANGE_PTS} pts of {price} — skipping screenshot")
         sys.exit(0)
 
-    bars = fetch_1h_bars()
+    try:
+        bars = load_1h_bars(symbol)
+    except FileNotFoundError as e:
+        print(f"ERROR: cached 1H bars missing for {symbol} — was run_levels.py run today? ({e})", file=sys.stderr)
+        sys.exit(1)
     if not bars:
-        print("ERROR: no bars returned from tradingview-mcp", file=sys.stderr)
+        print(f"ERROR: cached 1H bars file is empty for {symbol}", file=sys.stderr)
         sys.exit(1)
 
     png_path = save_chart(symbol, bars, levels, price, date_str)

@@ -15,6 +15,11 @@ Usage:
 
 import sys, json, datetime
 
+try:
+    from zoneinfo import ZoneInfo  # stdlib on Python 3.9+
+except ImportError:
+    ZoneInfo = None
+
 current_price = float(sys.argv[1])
 range_pts     = float(sys.argv[2])
 range_low     = current_price - range_pts
@@ -280,5 +285,34 @@ output = {
     },
     "hvn": sr_prices(hvn_levels),
 }
+
+# ── Session high/low (Asia 18:00–03:00 ET, London 03:00–09:30 ET) ────────────
+def compute_session_levels(bars):
+    empty = {"asia": {"hi": None, "lo": None}, "london": {"hi": None, "lo": None}}
+    if not bars or ZoneInfo is None:
+        return empty
+    ET = ZoneInfo("America/New_York")
+    now_et = datetime.datetime.now(ET)
+    today = now_et.date()
+    yday  = today - datetime.timedelta(days=1)
+
+    def ts(d, h, m=0):
+        return int(datetime.datetime(d.year, d.month, d.day, h, m, tzinfo=ET).timestamp())
+
+    windows = {
+        "asia":   (ts(yday, 18),  ts(today, 3)),
+        "london": (ts(today, 3),  ts(today, 9, 30)),
+    }
+    out = {}
+    for name, (start, end) in windows.items():
+        in_win = [b for b in bars if start <= b["time"] < end]
+        out[name] = ({"hi": max(b["high"] for b in in_win),
+                      "lo": min(b["low"]  for b in in_win)}
+                     if in_win else {"hi": None, "lo": None})
+    return out
+
+session_hl = compute_session_levels(bars_1h)
+output["asia"]   = session_hl["asia"]
+output["london"] = session_hl["london"]
 
 print(json.dumps(output, indent=2))
