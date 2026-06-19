@@ -30,7 +30,9 @@ sync_dir_verbatim() {  # idempotent, checksum-based, NEVER deletes (no --delete)
   local src="$1" dst="$2" label="$3"
   [ -d "$src" ] || { echo "  $label: (no source, skip)"; return; }
   mkdir -p "$dst"
-  local out; out="$(rsync -rcti "$src/" "$dst/")"
+  # exclude nested .git so a skill that is its own repo is captured as plain
+  # files (not an embedded gitlink/submodule)
+  local out; out="$(rsync -rcti --exclude='.git/' --exclude='.git' "$src/" "$dst/")"
   local n; n="$(printf '%s' "$out" | grep -c . || true)"
   if [ "$n" -eq 0 ]; then echo "  $label: unchanged"
   else echo "  $label: $n changed"; printf '%s\n' "$out" | sed 's/^/      /'; CHANGED=$((CHANGED+n)); fi
