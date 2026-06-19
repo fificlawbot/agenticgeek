@@ -44,11 +44,20 @@ agenticgeek/
 - **`install.sh`** (existing): deploy agenticgeek's curated agent toolkit. Untouched.
 - **`config-sync/sync.sh`** (new): capture/restore the entire personal `~/.claude` bespoke state. Two subcommands, no shared mutable state with `install.sh`.
 
+## Idempotency (core rule — applies to both directions)
+
+Sync **never blind-overwrites and never duplicates**. Every item is checked against what already exists; only missing items are added and only changed items are updated. Identical items are skipped. Nothing the sync did not author is deleted.
+
+- **Files (skills, agents, hooks, memory):** compare by checksum. `missing` → add, `differs` → update, `same` → skip. Local-only files the repo doesn't know about are left untouched (never pruned).
+- **`settings.json` / `.mcp.json`:** merge-aware, never wholesale clobber. Hook entries, agent defs, and permission lines are matched by identity (command string / agent `name` / permission text) — an entry already present is left as-is, only genuinely missing entries are added. Machine-local keys the repo doesn't manage are preserved.
+- **Plugins:** check `installed_plugins.json` first; install only plugins not already present. Already-installed → skip (no reinstall, no version churn). Same for `marketplace add` — skip marketplaces already known.
+- **Every run reports** counts: `added / updated / unchanged / skipped`, so a no-op run visibly does nothing.
+
 ## `sync.sh push` (machine → repo)
 
-Captures live `~/.claude` into `config-sync/claude/`.
+Captures live `~/.claude` into `config-sync/claude/`. Per the idempotency rule, only changed/missing files are written into the repo; identical files are left untouched (no churn, clean diffs).
 
-1. `rsync` these into `config-sync/claude/`:
+1. For each target, checksum-compare against the repo copy; `rsync` only what differs/is missing into `config-sync/claude/`:
    - `skills/` (all 18)
    - `agents/` (all 35)
    - `hooks/` (custom `.sh` + `context-mode-cache-heal.mjs`)
@@ -62,11 +71,11 @@ Captures live `~/.claude` into `config-sync/claude/`.
 
 ## `sync.sh pull` (repo → machine)
 
-Restores `config-sync/claude/` into `~/.claude`.
+Restores `config-sync/claude/` into `~/.claude`, idempotently (add-or-update-if-changed; identical items skipped; local-only files never pruned).
 
-1. **Render paths:** `sed 's#__HOME__#'"$HOME"'#g'` on `settings.json`, `.mcp.json`, `hooks/*.sh`.
-2. `rsync` `skills/`, `agents/`, `hooks/` into `~/.claude/`.
-3. Write `settings.json`, `.mcp.json` to `~/.claude/`.
+1. **Render paths:** `sed 's#__HOME__#'"$HOME"'#g'` on a temp copy of `settings.json`, `.mcp.json`, `hooks/*.sh` (render before compare, so path tokens don't show as false diffs).
+2. `skills/`, `agents/`, `hooks/`: checksum-compare each file vs `~/.claude/`; copy only missing/changed. Skip identical.
+3. `settings.json`, `.mcp.json`: **merge into** existing `~/.claude/` files (hooks/agents/permissions matched by identity, missing-only added, local keys preserved) — not overwrite.
 4. **Memory placement:** target dir name derives from the project path under the new `$HOME` — compute `~/.claude/projects/-Users-<user>-projects/memory/` from `$HOME`, not the literal old name. `chmod +x` restored hook scripts.
 5. Print next steps (plugin reinstall, install.sh, tradingview-mcp).
 
@@ -107,4 +116,5 @@ Plugins: caveman, skill-creator, claude-md-management, claude-mem, frontend-desi
 1. `config-sync/sync.sh push` captures all 6 bespoke targets, tokenizes paths, strips astha.tarun, aborts on secrets.
 2. Files committed to agenticgeek contain zero `/Users/trp` literals and zero secrets.
 3. On a clean machine (any username), following RESTORE.md yields a working Claude Code with all skills, agents, hooks, memory, and MCP intact.
-4. `sync.sh push` / `pull` round-trips idempotently.
+4. **Idempotent both ways:** a second `push` (or `pull`) with no real changes writes nothing and reports `0 added / 0 updated`. Plugin reinstall skips already-installed plugins. settings.json merge never duplicates an existing hook/agent/permission entry.
+5. Sync never deletes or overwrites local-only config it didn't author.
