@@ -13,3 +13,4 @@
 - [IGYouTube Git Large Files](igyoutube_git_largefiles.md) — never commit node_modules/media; history rewritten once for 136MB blob
 - [HyperFrames Setup](hyperframes_setup.md) — 17 hf skills global, npx CLI, Kokoro-only TTS (ElevenLabs external), Nate kit learnings
 - [DLL Video Build](igyoutube_dll_video_build.md) — 4K HyperFrames DLL video, 10 sections built, fix-loop 5/10 passed, remaining: fix 5 + 2s animation density + final render + SFX
+- [Claude Config Sync](claude_config_sync.md) — ~/.claude backup/restore via agenticgeek config-sync/, idempotent push/pull, portable across machines

@@ -11,7 +11,10 @@ function clean(node) {
   }
   if (node && typeof node === 'object') {
     const out = {};
-    for (const [k, v] of Object.entries(node)) out[k] = clean(v);
+    for (const [k, v] of Object.entries(node)) {
+      if (typeof v === 'string' && DEAD.test(v)) continue; // drop dead-account values
+      out[k] = clean(v);
+    }
     return out;
   }
   return node;
